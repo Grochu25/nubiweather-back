@@ -1,4 +1,4 @@
-package com.nubisoft.nubiweather.domain;
+package com.nubisoft.nubiweather.models;
 
 public record ForecastedWeather(
         Location location,

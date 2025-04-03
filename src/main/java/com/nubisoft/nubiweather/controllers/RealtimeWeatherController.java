@@ -1,10 +1,12 @@
 package com.nubisoft.nubiweather.controllers;
 
-import com.nubisoft.nubiweather.domain.Weather;
+import com.nubisoft.nubiweather.models.Weather;
 import com.nubisoft.nubiweather.networking.interfaces.WeatherService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/realtime-weather")
@@ -18,8 +20,9 @@ public class RealtimeWeatherController
     }
 
     @GetMapping
-    public Weather getWeatherInGliwice()
+    public List<Weather> getWeatherInGliwiceAndHamburg()
     {
-        return weatherService.getWeatherInCity("Gliwice");
+        String[] cities = {"Gliwice","Hamburg"};
+        return weatherService.getWeatherInCities(cities);
     }
 }
