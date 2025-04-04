@@ -1,5 +1,10 @@
 package com.nubisoft.nubiweather.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 public record Weather(
         Location location,
         Current current

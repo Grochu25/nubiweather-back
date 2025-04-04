@@ -15,7 +15,7 @@ class RestWeatherServiceTest
     @Test
     public void responseIsNotNull()
     {
-        var result = service.getWeatherInCity("Gliwice");
+        var result = service.getCurrentWeatherInCity("Gliwice");
 
         assertNotNull(result);
     }

@@ -3,6 +3,7 @@ package com.nubisoft.nubiweather.controllers;
 import com.nubisoft.nubiweather.models.Weather;
 import com.nubisoft.nubiweather.networking.interfaces.WeatherService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +24,12 @@ public class RealtimeWeatherController
     public List<Weather> getWeatherInGliwiceAndHamburg()
     {
         String[] cities = {"Gliwice","Hamburg"};
-        return weatherService.getWeatherInCities(cities);
+        return weatherService.getCurrentWeatherInCities(cities);
+    }
+
+    @GetMapping(path = "/{city}")
+    public Weather getWeatherInGliwice(@PathVariable String city)
+    {
+        return weatherService.getCurrentWeatherInCity(city);
     }
 }
