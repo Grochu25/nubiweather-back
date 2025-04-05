@@ -1,37 +1,37 @@
 package com.nubisoft.nubiweather.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nubisoft.nubiweather.data.converters.StringToDateConverter;
 import com.nubisoft.nubiweather.models.weatherComponents.WeatherCondition;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
-public record Weather(
+@NoArgsConstructor(access = AccessLevel.PUBLIC, force=true)
+@AllArgsConstructor
+@Data
+public class Weather{
         @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        @JsonIgnore
-        Long id,
-        String city,
-        String country,
-        String last_updated,
-        Float temp_c,
-        Float temp_f,
-        WeatherCondition condition,
-        Float wind_mph,
-        Float wind_kph,
-        String wind_dir,
-        Float pressure_mb,
-        Float pressure_in,
-        Float precip_mm,
-        Float precip_in,
-        Integer humidity,
-        Integer cloud,
-        Float feelslike_c,
-        Float feelslike_f,
-        Float vis_km,
-        Float vis_miles,
-        Float uv
-) {
+        private final LocalDateTime last_updated;
+        private final String city;
+        private final String country;
+        private final Float temp_c;
+        private final Float temp_f;
+        private final WeatherCondition condition;
+        private final Float wind_mph;
+        private final Float wind_kph;
+        private final String wind_dir;
+        private final Float pressure_mb;
+        private final Float pressure_in;
+        private final Float precip_mm;
+        private final Float precip_in;
+        private final Integer humidity;
+        private final Integer cloud;
+        private final Float feelslike_c;
+        private final Float feelslike_f;
+        private final Float vis_km;
+        private final Float vis_miles;
+        private final Float uv;
 }

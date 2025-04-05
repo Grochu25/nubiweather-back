@@ -3,15 +3,17 @@ package com.nubisoft.nubiweather.networking.converters;
 import com.nubisoft.nubiweather.models.Weather;
 import com.nubisoft.nubiweather.networking.DTOs.WeatherDTO;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class WeatherFromDTOConverter
 {
     public static Weather convert(WeatherDTO dto)
     {
         return new Weather(
-                null,
+                LocalDateTime.parse(dto.current().last_updated(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 dto.location().name(),
                 dto.location().country(),
-                dto.current().last_updated(),
                 dto.current().temp_c(),
                 dto.current().temp_f(),
                 dto.current().condition(),
