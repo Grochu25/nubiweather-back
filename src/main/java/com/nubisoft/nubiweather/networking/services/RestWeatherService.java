@@ -2,8 +2,12 @@ package com.nubisoft.nubiweather.networking.services;
 
 import com.nubisoft.nubiweather.models.ForecastedWeather;
 import com.nubisoft.nubiweather.models.Weather;
+import com.nubisoft.nubiweather.networking.DTOs.ForecastedWeatherDTO;
 import com.nubisoft.nubiweather.networking.DTOs.LocationsBulkDTO;
 import com.nubisoft.nubiweather.networking.DTOs.ResultWeatherApiBulkDTO;
+import com.nubisoft.nubiweather.networking.DTOs.WeatherDTO;
+import com.nubisoft.nubiweather.networking.converters.ForecastFromDTOConverter;
+import com.nubisoft.nubiweather.networking.converters.WeatherFromDTOConverter;
 import com.nubisoft.nubiweather.networking.errors.CustomResponseErrorHandler;
 import com.nubisoft.nubiweather.networking.interfaces.WeatherService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,12 +36,13 @@ public class RestWeatherService implements WeatherService
     @Override
     public Weather getCurrentWeatherInCity(String city) {
         try {
-            return restClient.get()
+            WeatherDTO weatherDTO = restClient.get()
                     .uri("http://api.weatherapi.com/v1/current.json?key={apiKey}&q={city}&aqi=yes", apiKey, city)
                     .accept(MediaType.APPLICATION_JSON)
                     .retrieve()
                     .onStatus(new CustomResponseErrorHandler())
-                    .body(Weather.class);
+                    .body(WeatherDTO.class);
+            return (weatherDTO != null) ? WeatherFromDTOConverter.convert(weatherDTO) : null;
         } catch (Exception e){
             log.error("Couldn't get forecast for city {}: {}", city, e.getMessage());}
 
@@ -47,12 +52,13 @@ public class RestWeatherService implements WeatherService
     @Override
     public ForecastedWeather getForecastedWeatherInCityForDays(String city, Integer days) {
         try {
-            return restClient.get()
+            ForecastedWeatherDTO forecastDTO = restClient.get()
                     .uri("http://api.weatherapi.com/v1/forecast.json?key={apiKey}&q={city}&days={days}", apiKey, city, days)
                     .accept(MediaType.APPLICATION_JSON)
                     .retrieve()
                     .onStatus(new CustomResponseErrorHandler())
-                    .body(ForecastedWeather.class);
+                    .body(ForecastedWeatherDTO.class);
+            return (forecastDTO != null) ? ForecastFromDTOConverter.convert(forecastDTO) : null;
         } catch (Exception e){
             log.error("Couldn't get forecast for city {}: {}", city, e.getMessage());}
 
@@ -65,13 +71,14 @@ public class RestWeatherService implements WeatherService
 
         var weatherResultDTO = getCurrentWeatherBulkFromApi(cities);
         if(weatherResultDTO != null) {
-            weather.addAll(weatherResultDTO.bulk.stream().map((ResultWeatherApiBulkDTO.Bulk::query)).toList());
+            weather.addAll(weatherResultDTO.bulk.stream()
+                    .map((bulk)-> WeatherFromDTOConverter.convert(bulk.query())).toList());
         }
 
         return (weather.isEmpty()) ? null : weather;
     }
 
-    private ResultWeatherApiBulkDTO<Weather> getCurrentWeatherBulkFromApi(String[] cities){
+    private ResultWeatherApiBulkDTO<WeatherDTO> getCurrentWeatherBulkFromApi(String[] cities){
         try {
             return restClient.post()
                     .uri("http://api.weatherapi.com/v1/current.json?key={apiKey}&q=bulk", apiKey)
@@ -79,7 +86,7 @@ public class RestWeatherService implements WeatherService
                     .body(new LocationsBulkDTO(cities))
                     .retrieve()
                     .onStatus(new CustomResponseErrorHandler())
-                    .toEntity(new ParameterizedTypeReference<ResultWeatherApiBulkDTO<Weather>>() {
+                    .toEntity(new ParameterizedTypeReference<ResultWeatherApiBulkDTO<WeatherDTO>>() {
                     }).getBody();
         } catch (Exception e){
             log.error("Couldn't get weather for multiple cities: {}", e.getMessage());}
@@ -93,13 +100,14 @@ public class RestWeatherService implements WeatherService
 
         var weatherForecastDTO = getForecastBulkFromApi(cities, days);
         if(weatherForecastDTO != null) {
-            weatherForecast.addAll(weatherForecastDTO.bulk.stream().map((ResultWeatherApiBulkDTO.Bulk::query)).toList());
+            weatherForecast.addAll(weatherForecastDTO.bulk.stream()
+                    .map((bulk) -> ForecastFromDTOConverter.convert((bulk.query()))).toList());
         }
 
         return (weatherForecast.isEmpty()) ? null : weatherForecast;
     }
 
-    private ResultWeatherApiBulkDTO<ForecastedWeather> getForecastBulkFromApi(String[] cities, Integer days){
+    private ResultWeatherApiBulkDTO<ForecastedWeatherDTO> getForecastBulkFromApi(String[] cities, Integer days){
         try {
             return restClient.post()
                     .uri("http://api.weatherapi.com/v1/forecast.json?key={apiKey}&q=bulk&days={days}", apiKey, days)
@@ -107,7 +115,7 @@ public class RestWeatherService implements WeatherService
                     .body(new LocationsBulkDTO(cities))
                     .retrieve()
                     .onStatus(new CustomResponseErrorHandler())
-                    .toEntity(new ParameterizedTypeReference<ResultWeatherApiBulkDTO<ForecastedWeather>>() {
+                    .toEntity(new ParameterizedTypeReference<ResultWeatherApiBulkDTO<ForecastedWeatherDTO>>() {
                     }).getBody();
         } catch (Exception e){
             log.error("Couldn't get forecast for multiple cities: {}", e.getMessage());}
