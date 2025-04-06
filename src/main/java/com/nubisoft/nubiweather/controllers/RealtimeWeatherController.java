@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.http.HttpRequest;
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +43,7 @@ public class RealtimeWeatherController
     {
         List<Weather> weathers = new ArrayList<>();
         for(String city : cities)
-            weathers.add(weatherRepository.getLastWeatherByCity(city).orElse(null));
+            weathers.add(weatherRepository.findLastWeatherByCity(city).orElse(null));
 
         if(!weathers.isEmpty())
             return new ResponseEntity<>(weathers, HttpStatus.OK);
@@ -68,7 +65,7 @@ public class RealtimeWeatherController
     @GetMapping(path = "/{city}/last")
     public ResponseEntity<Weather> getLastRegisteredWeatherInCity(@PathVariable String city)
     {
-        Weather weather = weatherRepository.getLastWeatherByCity(city).orElse(null);
+        Weather weather = weatherRepository.findLastWeatherByCity(city).orElse(null);
         if(weather != null)
             return new ResponseEntity<>(weather, HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
@@ -76,9 +73,9 @@ public class RealtimeWeatherController
 
     private void saveToDataBaseIfHourElapsed(Weather weather)
     {
-        weatherRepository.getLastWeatherByCity(weather.getCity()).ifPresentOrElse(
+        weatherRepository.findLastWeatherByCity(weather.getCity()).ifPresentOrElse(
                 lastWeather -> {
-                    if(Duration.between(lastWeather.getLast_updated(), weather.getLast_updated()).toHours() >= 1)
+                    if(Duration.between(lastWeather.getDataCollectTime(), weather.getDataCollectTime()).toHours() >= 1)
                         weatherRepository.save(weather);},
                 ()->weatherRepository.save(weather)
         );

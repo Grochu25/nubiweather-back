@@ -71,8 +71,7 @@ public class RestWeatherService implements WeatherService
 
         var weatherResultDTO = getCurrentWeatherBulkFromApi(cities);
         if(weatherResultDTO != null) {
-            weather.addAll(weatherResultDTO.bulk.stream()
-                    .map((bulk)-> WeatherFromDTOConverter.convert(bulk.query())).toList());
+            weather.addAll(convertFromWeatherDTO(weatherResultDTO));
         }
 
         return (weather.isEmpty()) ? null : weather;
@@ -94,14 +93,25 @@ public class RestWeatherService implements WeatherService
         return null;
     }
 
+    private List<Weather> convertFromWeatherDTO(ResultWeatherApiBulkDTO<WeatherDTO> dto){
+        List<Weather> weather = new ArrayList<>();
+        dto.bulk.forEach(bulk->{
+            try{
+                weather.add(WeatherFromDTOConverter.convert(bulk.query()));
+            }catch (Exception e){
+                log.error("converter error: "+e.getMessage());
+            }
+        });
+        return (weather.isEmpty()||weather.contains(null)) ? new ArrayList<>() : weather;
+    }
+
     @Override
     public List<ForecastedWeather> getForecastedWeatherInCitiesForDays(String[] cities, Integer days) {
         List<ForecastedWeather> weatherForecast = new ArrayList<>();
 
         var weatherForecastDTO = getForecastBulkFromApi(cities, days);
         if(weatherForecastDTO != null) {
-            weatherForecast.addAll(weatherForecastDTO.bulk.stream()
-                    .map((bulk) -> ForecastFromDTOConverter.convert((bulk.query()))).toList());
+            weatherForecast.addAll(convertFromForecastDTO(weatherForecastDTO));
         }
 
         return (weatherForecast.isEmpty()) ? null : weatherForecast;
@@ -123,4 +133,15 @@ public class RestWeatherService implements WeatherService
         return null;
     }
 
+    private List<ForecastedWeather> convertFromForecastDTO(ResultWeatherApiBulkDTO<ForecastedWeatherDTO> dto){
+        List<ForecastedWeather> forecastedWeather = new ArrayList<>();
+        dto.bulk.forEach(bulk->{
+            try{
+                forecastedWeather.add(ForecastFromDTOConverter.convert(bulk.query()));
+            }catch (Exception e){
+                log.error("converter error: "+e.getMessage());
+            }
+        });
+        return (forecastedWeather.isEmpty()||forecastedWeather.contains(null)) ? new ArrayList<>() : forecastedWeather;
+    }
 }

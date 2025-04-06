@@ -5,7 +5,7 @@ import com.nubisoft.nubiweather.networking.DTOs.ForecastedWeatherDTO;
 
 public class ForecastFromDTOConverter
 {
-    public static ForecastedWeather convert(ForecastedWeatherDTO dto)
+    public static ForecastedWeather convert(ForecastedWeatherDTO dto) throws Exception
     {
         return new ForecastedWeather(
                 dto.location().name(),

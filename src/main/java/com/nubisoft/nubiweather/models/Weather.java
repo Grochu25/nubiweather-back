@@ -1,7 +1,5 @@
 package com.nubisoft.nubiweather.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nubisoft.nubiweather.data.converters.StringToDateConverter;
 import com.nubisoft.nubiweather.models.weatherComponents.WeatherCondition;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 public class Weather{
         @Id
-        private final LocalDateTime last_updated;
+        private final LocalDateTime dataCollectTime;
         private final String city;
         private final String country;
         private final Float temp_c;
