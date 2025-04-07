@@ -29,9 +29,6 @@ public class RealtimeWeatherController
     {
         List<Weather> weathers = weatherService.getCurrentWeatherInCities(cities);
         if(weathers != null) {
-            for (Weather weather : weathers) {
-                saveToDataBaseIfHourElapsed(weather);
-            }
             return new ResponseEntity<>(weathers, HttpStatus.OK);
         }
 
@@ -56,7 +53,6 @@ public class RealtimeWeatherController
     {
         Weather weather = weatherService.getCurrentWeatherInCity(city);
         if(weather != null){
-            saveToDataBaseIfHourElapsed(weather);
             return new ResponseEntity<>(weather, HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
@@ -69,15 +65,5 @@ public class RealtimeWeatherController
         if(weather != null)
             return new ResponseEntity<>(weather, HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
-    }
-
-    private void saveToDataBaseIfHourElapsed(Weather weather)
-    {
-        weatherRepository.findLastWeatherByCity(weather.getCity()).ifPresentOrElse(
-                lastWeather -> {
-                    if(Duration.between(lastWeather.getDataCollectTime(), weather.getDataCollectTime()).toHours() >= 1)
-                        weatherRepository.save(weather);},
-                ()->weatherRepository.save(weather)
-        );
     }
 }
