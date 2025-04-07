@@ -1,7 +1,6 @@
 package com.nubisoft.nubiweather.data.collectors;
 
 import com.nubisoft.nubiweather.data.interfaces.WeatherRepository;
-import com.nubisoft.nubiweather.models.Weather;
 import com.nubisoft.nubiweather.networking.interfaces.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,7 +19,7 @@ public class ScheduledWeatherSave {
         String[] cities = new String[] {"Gliwice", "Hamburg"};
         var weathers = weatherService.getCurrentWeatherInCities(cities);
         if(weathers != null) {
-            weathers.forEach( weather -> weatherRepository.save(weather));
+            weatherRepository.saveAll(weathers);
         }
     }
 }
