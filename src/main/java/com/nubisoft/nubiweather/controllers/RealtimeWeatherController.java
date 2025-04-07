@@ -50,9 +50,11 @@ public class RealtimeWeatherController
     @GetMapping(path = "/{city}")
     public ResponseEntity<Weather> getWeatherInCity(@PathVariable String city)
     {
-        Weather weather = weatherService.getCurrentWeatherInCity(city);
-        if(weather != null){
-            return new ResponseEntity<>(weather, HttpStatus.OK);
+        if(city.equals("Gliwice") || city.equals("Hamburg")){
+            Weather weather = weatherService.getCurrentWeatherInCity(city);
+            if(weather != null){
+                return new ResponseEntity<>(weather, HttpStatus.OK);
+            }
         }
         return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
     }
@@ -60,9 +62,11 @@ public class RealtimeWeatherController
     @GetMapping(path = "/{city}/last")
     public ResponseEntity<Weather> getLastRegisteredWeatherInCity(@PathVariable String city)
     {
-        Weather weather = weatherRepository.findLastWeatherByCity(city).orElse(null);
-        if(weather != null)
-            return new ResponseEntity<>(weather, HttpStatus.OK);
+        if(city.equals("Gliwice") || city.equals("Hamburg")) {
+            Weather weather = weatherRepository.findLastWeatherByCity(city).orElse(null);
+            if (weather != null)
+                return new ResponseEntity<>(weather, HttpStatus.OK);
+        }
         return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
     }
 }

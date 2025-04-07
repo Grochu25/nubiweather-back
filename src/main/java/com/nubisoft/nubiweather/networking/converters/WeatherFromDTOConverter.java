@@ -11,6 +11,7 @@ public class WeatherFromDTOConverter
     public static Weather convert(WeatherDTO dto) throws Exception
     {
         return new Weather(
+                null,
                 LocalDateTime.parse(dto.current().last_updated(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 dto.location().name(),
                 dto.location().country(),
