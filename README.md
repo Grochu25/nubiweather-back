@@ -1,5 +1,5 @@
 # NubiWeather Backend
-Project created to apply for internship in nubisoft company. The application uses [weatherapi.com](https://www.weatherapi.com/) to retrieve current weather and a 7-day weather forecast for Gliwice and Hamburg.
+Project created to apply for internship in nubisoft company. The application uses [weatherapi.com](https://www.weatherapi.com/) to retrieve current weather and a weather forecast for Gliwice and Hamburg.
 ## Project requirements
 To run the project requires java 21 and docker to run database in container.
 
@@ -13,7 +13,7 @@ The application runs on standard 8080 port.
 ## Endpoints
 The application exposes 4 endpoints:
  - /realtime-weather - returns the current weather in Gliwice and Hamburg
- - /forecast-weather - returns the 7-day weather forecast for Gliwice and Hamburg.
+ - /forecast-weather - returns the weather forecast for Gliwice and Hamburg.
  - /realtime-weather/Gliwice - returns the current weather in Gliwice
  - /realtime-weather/Hamburg - returns the current weather in Hamburg
  - /realtime-weather/Gliwice/last - returns the last recorded weather in Gliwice
