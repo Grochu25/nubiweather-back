@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,16 +25,17 @@ class WeatherRepositoryTest {
 
     @Test
     public void saveAndFindByTest(){
-        Weather weather = new Weather(
+        Weather weather = new Weather(null,
                 mockDate,"Test","Test",0.0f,0.0f, new WeatherCondition("Test","test"),0.0f,
                 0.0f, "test", 0.0f, 0.0f, 0.0f, 0.0f, 0, 0, 0.0f,
                 0.0f,0.0f,0.0f,0.0f);
         weatherRepository.save(weather);
 
-        Weather weather1 = weatherRepository.findByDataCollectTime(mockDate).orElse(null);
+        List<Weather> weatherList1 = weatherRepository.findByDataCollectTime(mockDate).orElse(null);
         Weather weather2 = weatherRepository.findLastWeatherByCity(weather.getCity()).orElse(null);
 
-        assertNotNull(weather1);
+        assertNotNull(weatherList1);
+        var weather1 = weatherList1.getFirst();
         assertEquals(weather.getDataCollectTime(), weather1.getDataCollectTime());
         assertEquals(weather, weather1);
 
