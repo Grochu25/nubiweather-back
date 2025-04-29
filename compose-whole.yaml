@@ -1,0 +1,28 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_DATABASE=weather_history'
+      - 'MYSQL_USER=user'
+      - 'MYSQL_PASSWORD=123'
+      - 'MYSQL_ROOT_PASSWORD=12345'
+    ports:
+      - '3306:3306'
+    networks:
+      - spring-network
+  nubiweather:
+    build: .
+    container_name: nubiweather
+    environment:
+      - 'WEATHER_API_KEY=5ecff37c3096484d8a0100132250304'
+      - 'BASEHOST=mysql'
+    ports:
+      - '8080:8080'
+    networks:
+      - spring-network
+    links:
+      - mysql
+    depends_on:
+      - mysql
+networks:
+  spring-network: { }
